@@ -1,0 +1,43 @@
+local Player = "LocalPlayer"
+
+local Remote = game.ReplicatedStorage.PlaceStructure.ClientPlacedStructure
+local Plr = game:GetService("Players").LocalPlayer
+local Check = true
+
+local BpRecive = { [1] = "Wall2Tall", [2] = "Door1", [3] = "Floor2", [4] = "Floor1Small", [5] = "Post", [6] = "Wedge10", [7] = "Wall3Tall", [8] = "Wall1Tall", [9] = "Wall1", [10] = "Wall1Short", [11] = "Wall2", [12] = "Wall2Short", [13] = "Wall1TallCorner", [14] = "Wall1Corner", [15] = "Wall1ShortCorner", [16] = "Wall1Thin", [17] = "Wall1TallThin", [18] = "Wall1ShortThin", [19] = "Wall2TallThin", [20] = "Wall2Thin", [21] = "Wall2ShortThin", [22] = "Wall2TallCorner", [23] = "Wall2Corner", [24] = "Wall2ShortCorner", [25] = "Wall3Thin", [26] = "Wall3TallThin", [27] = "Wall3Corner", [28] = "Wall3TallCorner", [29] = "Floor1Large", [30] = "Floor1", [31] = "Floor2Large", [32] = "Floor2Small", [33] = "Stair1", [34] = "Stair2", [35] = "Wedge1_Thin", [36] = "Wedge9_Thin", [37] = "Wedge4_Thin", [38] = "Wedge7_Thin", [39] = "Chair1", [40] = "Table1", [41] = "Table2", [42] = "Ladder1", [43] = "Cabinet1Thin", [44] = "Cabinet1", [45] = "Cabinet1CornerTight", [46] = "Cabinet1CornerWide", [47] = "CounterTop1Thin", [48] = "CounterTop1", [49] = "CounterTop1Sink", [50] = "Floor2Tiny", [51] = "Floor1Tiny", [52] = "Wedge1", [53] = "Wedge2", [54] = "Wedge3", [55] = "Wedge4", [56] = "Wedge8", [57] = "Wedge7", [58] = "Wedge6", [59] = "Wedge2_Thin", [60] = "Wedge3_Thin", [61] = "Wedge10_Thin", [62] = "Wedge9", [63] = "Wedge6_Thin", [64] = "Wedge8_Thin", [65] = "Wedge5", [66] = "Wedge5_Thin", [67] = "Wall3", [68] = "Door2", [69] = "Door3" }
+
+local function Gray()
+    local ItsCFrame
+    local Remote = game.ReplicatedStorage.PlaceStructure.ClientPlacedStructure
+    for i,v in pairs(game.Workspace.PlayerModels:GetChildren()) do
+        if v:FindFirstChild("Owner") and v.Owner.Value == game.Players[Player] then
+            if v:FindFirstChild("Type") and v.Type.Value == "Blueprint" then
+                if v ~= nil then
+                    Remote:FireServer(v.ItemName.Value, v.PrimaryPart.CFrame, game.Players.LocalPlayer, nil, v, true)
+                end
+            end
+        end
+    end
+end
+
+game.Workspace.PlayerModels.ChildAdded:connect(function(v)
+    if v:WaitForChild("Owner", 5) and v:WaitForChild("ItemName", 5) and Check then
+        Remote:FireServer(v.ItemName.Value, v.PrimaryPart.CFrame, game.Players.LocalPlayer, nil, v, true)
+    end
+end)
+
+local Base
+for i, v in pairs(game.Workspace.Properties:GetChildren()) do
+    if v.Owner.Value == game.Players[Player] then
+        Base = v.OriginSquare.CFrame
+    end
+end
+
+local Count = 0
+local Gr = 0
+function Sbp(A_1, A_2, A_3, A_4, A_5, A_6, A_7)
+    game.ReplicatedStorage.PlaceStructure.ClientPlacedBlueprint:FireServer(BpRecive[A_1], Base* CFrame.Angles(A_2, A_3, A_4) + Vector3.new(A_5, A_6, A_7), Plr)
+    wait()
+    if Count > 16 then Count = 0 wait(0.1) else Count = Count + 1 end
+    if Gr > 50 then Gr = 0 Gray() else Gr = Gr + 1 end
+end
